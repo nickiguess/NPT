@@ -12,6 +12,7 @@ import io.lumine.xikage.mythicmobs.io.MythicLineConfig;
 import io.lumine.xikage.mythicmobs.skills.ITargetedEntitySkill;
 import io.lumine.xikage.mythicmobs.skills.SkillMechanic;
 import io.lumine.xikage.mythicmobs.skills.SkillMetadata;
+import io.lumine.xikage.mythicmobs.utils.logging.Log;
 
 
 public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySkill
@@ -45,48 +46,65 @@ public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySk
     @Override
     public boolean castAtEntity(SkillMetadata data, AbstractEntity target) 
     {
-		Player player = (Player) data.getTrigger();
+		Player player = (Player) data.getTrigger().getBukkitEntity();
     	if (target.isPlayer() == false) 
     	{
-    		
+    		Log.info("Inizio");
     		ItemStack teleportItem = new ItemStack(MythicMobs.inst().getItemManager().getItemStack(item));
     		teleportItem.setAmount(amount);
 
 			ItemStack playerHand = player.getInventory().getItemInMainHand();
+			int playerHandAmount = player.getInventory().getItemInMainHand().getAmount();
 			int playerLevel = player.getLevel();
 			boolean playerInventory = player.getInventory().isEmpty();
+			
+			if (playerHand.getItemMeta().getDisplayName() != null) 
+			{
+				Log.info(playerHand.getItemMeta().getDisplayName() + playerHandAmount + playerLevel + playerInventory);
+			}
+			
 			World worldLocation = Bukkit.getWorld(world);
 			Location location = new Location(worldLocation, x, y, z);
 			
 			if (playerInventory == true && emptyInventory == true) 
 			{
+	    		Log.info("Inventario vuoto");
 				player.teleport(location);
 			} else if (playerInventory == false && emptyInventory == true) 
 			{
-				
+	    		Log.info("Inventario non vuoto");
+				Bukkit.broadcastMessage("§cYou need an empty inventory!");
 			} else
 			{
-				if (playerHand == teleportItem) 
+				if (playerHand.getItemMeta().getDisplayName() != null) 
 				{
-					if (playerLevel != 0) 
+					if (playerHand.getItemMeta().getDisplayName() == teleportItem.getItemMeta().getDisplayName() && playerHandAmount >= amount) 
 					{
-						if (playerLevel >= level) 
+			    		Log.info("Itemcheck works");
+						if (playerLevel != 0) 
 						{
-							player.setLevel(playerLevel - level);
-							player.getInventory().remove(teleportItem);
-							player.teleport(location);
+				    		Log.info("Levels work");
+							if (playerLevel >= level) 
+							{
+								player.setLevel(playerLevel - level);
+								player.getInventory().remove(teleportItem);
+								player.teleport(location);
+							} else 
+							{
+					    		Log.info("Levels work but no");
+								Bukkit.broadcastMessage("§cYou don't have enough levels!");
+								Bukkit.broadcastMessage("§cYou need at least " + level + " levels");
+							}
 						} else 
 						{
-							Bukkit.broadcastMessage("§cYou don't have enough levels!");
-							Bukkit.broadcastMessage("§cYou need at least " + level + " levels");
+				    		Log.info("Levels work but no times 2");
+							player.getInventory().remove(teleportItem);
+							player.teleport(location);
 						}
-					} else 
-					{
-						player.getInventory().remove(teleportItem);
-						player.teleport(location);
 					}
 				} else 
 				{
+		    		Log.info("items work but no");
 					Bukkit.broadcastMessage("§cYou don't have the required items!");
 					Bukkit.broadcastMessage("§cYou need " + amount + " " + teleportItem.getItemMeta().getDisplayName());
 				}
