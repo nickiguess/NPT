@@ -14,8 +14,7 @@ import io.lumine.xikage.mythicmobs.skills.SkillMechanic;
 import io.lumine.xikage.mythicmobs.skills.SkillMetadata;
 
 
-public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySkill
-{
+public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySkill {
     protected String item;
     protected String world;
     protected int amount;
@@ -25,8 +24,7 @@ public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySk
     protected double z;
     protected boolean emptyInventory;
     
-    public TeleportMechanic(MythicLineConfig config) 
-    {
+    public TeleportMechanic(MythicLineConfig config) {
         super(config.getLine(), config);
         this.setAsyncSafe(false);
         this.setTargetsCreativePlayers(false);
@@ -43,18 +41,14 @@ public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySk
     }
     
     @Override
-    public boolean castAtEntity(SkillMetadata data, AbstractEntity target) 
-    {
+    public boolean castAtEntity(SkillMetadata data, AbstractEntity target) {
 		Player player = (Player) data.getTrigger().getBukkitEntity();
-    	if (target.isPlayer() == false) 
-    	{
-    		if (MythicMobs.inst().getItemManager().getItemStack(item) != null) 
-    		{
+    	if (target.isPlayer() == false) {
+    		if (MythicMobs.inst().getItemManager().getItemStack(item) != null) {
         		ItemStack teleportItem = new ItemStack(MythicMobs.inst().getItemManager().getItemStack(item));
         		teleportItem.setAmount(amount);
         		
-        		if (player.getInventory().getItemInMainHand() != null) 
-    			{
+        		if (player.getInventory().getItemInMainHand() != null) {
     				ItemStack playerHand = player.getInventory().getItemInMainHand();
     				int playerHandAmount = player.getInventory().getItemInMainHand().getAmount();
     				int playerLevel = player.getLevel();
@@ -62,43 +56,34 @@ public class TeleportMechanic extends SkillMechanic implements ITargetedEntitySk
     				World worldLocation = Bukkit.getWorld(world);
     				Location location = new Location(worldLocation, x, y, z);
     		    		
-    					if (playerHand.isSimilar(teleportItem) && playerHandAmount >= amount) 
-    					{
-    						if (level != 0) 
-    						{
-    							if (playerLevel >= level) 
-    							{
+    					if (playerHand.isSimilar(teleportItem) && playerHandAmount >= amount) {
+    						if (level != 0) {
+    							if (playerLevel >= level) {
     								player.setLevel(playerLevel - level);
     								playerHand.setAmount(playerHandAmount - amount);
     								player.teleport(location);
     								Bukkit.broadcastMessage("§1§l§oN§9§l§oP§1§L§oT §3§l§o» §b§l§oSei stato teletrasportato!");
-    							} else 
-    							{
+    							} else {
     								Bukkit.broadcastMessage("§1§l§oN§9§l§oP§1§L§oT §3§l§o» §b§l§oTi servono " + level + " livelli per teletrasportarti!");
     							}
-    						} else 
-    						{
+    						} else {
 								playerHand.setAmount(playerHandAmount - amount);
     							player.teleport(location);
 								Bukkit.broadcastMessage("§1§l§oN§9§l§oP§1§L§oT §3§l§o» §b§l§oSei stato teletrasportato!");
     						}
-    					} else 
-    					{
+    					} else {
     						Bukkit.broadcastMessage("§1§l§oN§9§l§oP§1§L§oT §3§l§o» §b§l§oTi servono " + amount + " " + teleportItem.getItemMeta().getDisplayName() + "§b§l§o per teletrasportarti");
     					}
     				}
-    			} else 
-    			{
+    			} else {
     				boolean playerInventory = player.getInventory().isEmpty();
 
     				World worldLocation = Bukkit.getWorld(world);
     				Location location = new Location(worldLocation, x, y, z);
     				
-    				if (playerInventory == true && emptyInventory == true)
-    				{
+    				if (playerInventory == true && emptyInventory == true) {
     					player.teleport(location);
-    				} else if (playerInventory == false && emptyInventory == true) 
-    				{
+    				} else if (playerInventory == false && emptyInventory == true) {
 						Bukkit.broadcastMessage("§1§l§oN§9§l§oP§1§L§oT §3§l§o» §b§l§oDevi avere l'inventario vuoto per teletrasportarti!");
     				}
     			}

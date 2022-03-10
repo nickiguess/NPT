@@ -11,16 +11,12 @@ import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicReloadedEvent;
 import io.lumine.xikage.mythicmobs.skills.SkillMechanic;
 
 
-public class EventListener implements Listener
-{	
+public class EventListener implements Listener {	
 	@EventHandler
-	public void onMythicMechanicLoad(MythicMechanicLoadEvent event)	
-	{
+	public void onMythicMechanicLoad(MythicMechanicLoadEvent event)	{
 		String eventMechanic = event.getMechanic().toString();
-		if (eventMechanic == "Optional.empty") 
-		{
-			if(event.getMechanicName().equalsIgnoreCase("ACCESSTELEPORT"))	
-			{
+		if (eventMechanic.equals("Optional.empty")) {
+			if(event.getMechanicName().equalsIgnoreCase("ACCESSTELEPORT"))	{
 				SkillMechanic mechanic = new TeleportMechanic(event.getConfig());
 				event.register(mechanic);
 			}
@@ -28,8 +24,7 @@ public class EventListener implements Listener
 	}
 	
 	@EventHandler
-	public void onMythicMobsReload(MythicReloadedEvent event) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException 
-	{
+	public void onMythicMobsReload(MythicReloadedEvent event) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException {
 		
 	}
 }
